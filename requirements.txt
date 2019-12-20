@@ -47,7 +47,6 @@ groundwork==0.1.15
 groundwork-database==0.1.4
 groundwork-sphinx-theme==1.0.9
 groundwork-web==0.1.5
-gw-utils==0.3.0
 hyperlink==19.0.0
 idna==2.8
 imagesize==1.1.0
