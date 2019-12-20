@@ -1,0 +1,1 @@
+from .competancy_mgt_app import COMPETANCY_MGT_APP

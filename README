@@ -1,0 +1,6 @@
+Installation
+============
+
+Inside competancy_mgt run::
+
+    python setup.py develop

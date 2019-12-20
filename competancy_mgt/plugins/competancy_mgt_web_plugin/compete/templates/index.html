@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'header.html' %}
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    {% include 'sidebar.html' %}
+
+    <!-- Content Wrapper -->
+    <div id="content-wrapper" class="d-flex flex-column">
+
+      <!-- Main Content -->
+      <div id="content">
+
+        {% include 'topbar.html' %}
+
+        <!-- Begin Page Content -->
+        <div class="container-fluid">
+
+          <!-- Page Heading -->
+          <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <h1 class="h3 mb-0 text-gray-800">My Data</h1>
+
+          </div>
+
+          <div>
+            <div class="row">
+              <table class="datatable">
+                <tr>
+                  <th>Practice</th>
+                  <th>Language</th>
+                  <th>RDCT</th>
+                  <th>Level</th>
+                  <th>Action</th>
+                </tr>
+                {% for key, value in user_data['complete_table'].items() %}
+                <tr>
+                  {% for data in value %}
+                  <td>{{ data }}</td>
+                  {% endfor %}
+                  <td id="{{ key }}" onclick="alert('{{ key }} clicked');">
+                      <button id="btn2">Delete</button>
+                  </td>
+                </tr>
+                {% endfor %}
+              </table>
+            <div class="form-style-5">
+              <form method="post">
+              <fieldset>
+                <legend>Enter you details</legend>
+                <table>
+                  <tr>
+                    {% for key2, values in  user_data['default_data'].items() %}
+                    <td>
+                      <select id="{{ key2 }}" name="{{ key2 }}">
+                        {% for var in values %}
+                        <option value="{{ var }}">{{ var }}</option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    {% endfor %}
+                    <td>
+                      <textarea rows="2" cols="20" id="other" placeholder="About this experience"></textarea>
+                    </td>
+                  </tr>
+                  <tr>
+                    {% if success %}
+                      <p class="success"><strong>Success:</strong> {{ success }}
+                    {% endif %}
+                  </tr>
+                </table>
+              </fieldset>
+              <input type="submit" value="Add" />
+              </form>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+
+      </div>
+      <!-- End of Main Content -->
+    </div>
+    <!-- End of Content Wrapper -->
+
+  </div>
+  <!-- End of Page Wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  {% include 'logoutmodel.html' %}
+    </div>
+  <!-- Bootstrap core JavaScript-->
+  <script src="{{url_for('compete.static', filename='vendor/jquery/jquery.min.js')}}"></script>
+  <script src="{{url_for('compete.static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="{{url_for('compete.static', filename='vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="{{url_for('compete.static', filename='js/sb-admin-2.min.js')}}"></script>
+
+  <!-- Page level plugins -->
+  <script src="{{url_for('compete.static', filename='vendor/chart.js/Chart.min.js')}}"></script>
+
+  <!-- Page level custom scripts -->
+  <script src="{{url_for('compete.static', filename='js/demo/chart-area-demo.js')}}"></script>
+  <script src="{{url_for('compete.static', filename='js/demo/chart-pie-demo.js')}}"></script>
+
+</body>
+
+</html>
