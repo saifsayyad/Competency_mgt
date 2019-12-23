@@ -70,7 +70,6 @@ packaging==19.0
 passlib==1.7.1
 pathlib==1.0.1
 pathtools==0.1.2
-pkg-resources==0.0.0
 pluggy==0.11.0
 port-for==0.3.1
 poyo==0.4.2

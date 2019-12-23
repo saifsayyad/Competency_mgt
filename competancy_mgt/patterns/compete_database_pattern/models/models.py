@@ -18,14 +18,16 @@ def get_classes(db, names=None):
     class Employee(Base):
         __tablename__ = 'Employee'
         emp_id = Column(Integer, primary_key=True)
-        name = Column(VARCHAR, nullable=False)
-        authorization = Column(VARCHAR, nullable=False)
+        name = Column(VARCHAR(length=30), nullable=False)
+        authorization = Column(VARCHAR(length=5), nullable=False)
+        grade = Column(VARCHAR(length=5), nullable=False)
         emp_rel = relationship('CompetencyHub', backref="emp")
 
-        def __init__(self, emp_id, name, authorization):
+        def __init__(self, emp_id, name, authorization, grade):
             self.emp_id = emp_id
             self.name = name
             self.authorization = authorization
+            self.grade = grade
 
     class EmployeeManager(Base):
         __tablename__ = 'EmployeeManager'
@@ -61,7 +63,7 @@ def get_classes(db, names=None):
     class Offering(Base):
         __tablename__ = "Offering"
 
-        id = Column(Integer, primary_key=True, nullable=False)
+        id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
         text = Column(VARCHAR(length=255), nullable=False)
         offer_rel = relationship('CompetencyHub', backref="offer")
 
@@ -116,7 +118,7 @@ def get_classes(db, names=None):
     class Ps1(Base):
         __tablename__ = "Ps1"
 
-        id = Column(Integer, primary_key=True, nullable=False)
+        id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
         text = Column(VARCHAR(length=20), nullable=True)
         ps1_rel = relationship('CompetencyHub', backref="ps1")
 
@@ -127,7 +129,7 @@ def get_classes(db, names=None):
     class Ps2(Base):
         __tablename__ = "Ps2"
 
-        id = Column(Integer, primary_key=True, nullable=False)
+        id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
         text = Column(VARCHAR(length=20), nullable=True)
         ps2_rel = relationship('CompetencyHub', backref="ps2")
 
@@ -138,7 +140,7 @@ def get_classes(db, names=None):
     class Ps3(Base):
         __tablename__ = "Ps3"
 
-        id = Column(Integer, primary_key=True, nullable=False)
+        id = Column(Integer, primary_key=True, nullable=False, autoincrement=True)
         text = Column(VARCHAR(length=20), nullable=True)
         ps3_rel = relationship('CompetencyHub', backref="ps3")
 
@@ -194,12 +196,21 @@ def get_classes(db, names=None):
         ps3_id = Column(Integer, ForeignKey('Ps3.id'), nullable=False)
         level = Column(Integer, ForeignKey('levels.id'), nullable=False)
 
-        def __init__(self, emp_id, emp_lang_id, emp_practice_id, emp_rdct_id, level):
+        def __init__(self, emp_id, emp_lang_id, emp_practice_id, emp_rdct_id, level, tech_id, micro_id, offering_id,
+                     tools_id, company_id, ps1_id, ps2_id, ps3_id):
             self.level = level
             self.emp_id = emp_id
             self.emp_lang_id = emp_lang_id
             self.emp_practice_id = emp_practice_id
             self.emp_rdct_id = emp_rdct_id
+            self.tech_id = tech_id
+            self.micro_id = micro_id
+            self.offering_id = offering_id
+            self.tools_id = tools_id
+            self.company_id = company_id
+            self.ps1_id = ps1_id
+            self.ps2_id = ps2_id
+            self.ps3_id = ps3_id
 
     if not isinstance(names, (str, list)) and names is not None:
         raise TypeError("names must be None, a String or list of Strings")

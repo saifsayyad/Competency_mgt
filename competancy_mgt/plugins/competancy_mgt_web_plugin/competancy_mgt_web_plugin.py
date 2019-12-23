@@ -17,8 +17,7 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
         self.access_rights = ''
         self.db = self.app.databases.get(self.app.config.get('CM_DATABASE_NAME'))
         self.user_data = {'username': self.loggedin_username, 'emp_id': self.loggedin_user_id, "access": 'False',
-                     "complete_table": {}, "default_data": {}}
-
+                          "complete_table": {}, "default_data": {}}
 
     def activate(self):
         static_folder = os.path.join(os.path.abspath(os.path.dirname(__file__)), "compete", "static")
@@ -40,7 +39,8 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
                                  context="compete", name="compete_view_register", description="Registration Page")
 
         self.web.routes.register(url='/test1', methods=["GET"], endpoint=self.__test1, context="compete")
-        self.web.routes.register(url='/update_res', methods=["GET", "POST"], endpoint=self.__update_resource, context="compete")
+        self.web.routes.register(url='/update_res', methods=["GET", "POST"], endpoint=self.__update_resource,
+                                 context="compete")
 
     def deactivate(self):
         pass
@@ -51,7 +51,6 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
     def __update_resource(self):
         method = request.method
         if method == "GET":
-
             return self.web.render("tables.html", user_data=self.user_data)
 
     def __user_login(self):
@@ -87,10 +86,11 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
             pass1 = request.form['pass1']
             pass2 = request.form['pass2']
             emp_id = request.form['employeeID']
+            emp_grade = request.form['employeeGrade']
             if pass1 != pass2:
                 return self.web.render("register.html", error="Password doesn't match")
             else:
-                self.db_import('Employee', emp_id=emp_id, name=username)
+                self.db_import('Employee', emp_id=emp_id, name=username, grade=emp_grade, authorization='False')
                 self.db_import('Access', emp_id=emp_id, password=pass1)
                 return self.web.render("register.html", success="Account registered, Please go to the login page")
 
@@ -98,7 +98,9 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
         method = request.method
         if method == 'GET':
             if self.user_data['emp_id'] != '':
-                self.user_data['complete_table'], self.user_data['default_data'] = self.__fill_table(emp_id=self.user_data['emp_id'])
+                self.user_data['complete_table'], self.user_data['default_data'], self.user_data[
+                    'emp_table'] = self.__fill_table(
+                    emp_id=self.user_data['emp_id'])
                 if self.access_rights == 'True':
                     self.user_data['access'] = 'True'
                     print(self.user_data)
@@ -109,14 +111,41 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
             else:
                 return redirect(url_for('compete.__user_login'))
         else:
-            language = self.db.classes.get('Language').clazz.query.filter_by(lang_name=request.form['languages']).first()
+            language = self.db.classes.get('Language').clazz.query.filter_by(
+                lang_name=request.form['languages']).first()
             practice = self.db.classes.get('Practices').clazz.query.filter_by(name=request.form['practice']).first()
             rdct = self.db.classes.get('RDCT').clazz.query.filter_by(rdct_name=request.form['rdct']).first()
+            company = self.db.classes.get('Company').clazz.query.filter_by(text=request.form['Company']).first()
+            micro = self.db.classes.get('Microcontroller').clazz.query.filter_by(
+                text=request.form['Microcontroller']).first()
+            tech = self.db.classes.get('Technology').clazz.query.filter_by(tech=request.form['Technology']).first()
+            tools = self.db.classes.get('Tools').clazz.query.filter_by(text=request.form['Tools']).first()
             lvl = self.db.classes.get('levels').clazz.query.filter_by(val=request.form['levels']).first()
 
-            self.db_import('CompetencyHub', emp_id=int(self.user_data['emp_id']), emp_lang_id=language.id, emp_practice_id=practice.id, emp_rdct_id=rdct.id, level=lvl.id)
+            offer_text = request.form['offering'] if len(request.form['offering']) > 0 else "N/A"
+            self.db_import('Offering', text=offer_text)
+            offering = self.db.classes.get('Offering').clazz.query.filter_by(text=offer_text).first()
+
+            ps1_text = request.form['ps1'] if len(request.form['ps1']) > 0 else "N/A"
+            self.db_import('Ps1', text=ps1_text)
+            ps1 = self.db.classes.get('Ps1').clazz.query.filter_by(text=ps1_text).first()
+
+            ps2_text = request.form['ps2'] if len(request.form['ps2']) > 0 else "N/A"
+            self.db_import('Ps2', text=ps2_text)
+            ps2 = self.db.classes.get('Ps2').clazz.query.filter_by(text=ps2_text).first()
+
+            ps3_text = request.form['ps3'] if len(request.form['ps3']) > 0 else "N/A"
+            self.db_import('Ps3', text=ps3_text)
+            ps3 = self.db.classes.get('Ps3').clazz.query.filter_by(text=ps3_text).first()
+
+            self.db_import('CompetencyHub', emp_id=int(self.user_data['emp_id']), emp_lang_id=language.id,
+                           emp_practice_id=practice.id, emp_rdct_id=rdct.id, level=lvl.id, company_id=company.id,
+                           micro_id=micro.id, tech_id=tech.id, tools_id=tools.id, offering_id=offering.id,
+                           ps1_id=ps1.id, ps2_id=ps2.id, ps3_id=ps3.id)
+
             if self.user_data['emp_id'] != '':
-                self.user_data['complete_table'], self.user_data['default_data'] = self.__fill_table(emp_id=self.user_data['emp_id'])
+                self.user_data['complete_table'], self.user_data['default_data'], self.user_data[
+                    'emp_table'] = self.__fill_table(emp_id=self.user_data['emp_id'])
             else:
                 return redirect(url_for('compete.__user_login'))
             return self.web.render("index.html", user_data=self.user_data, success="Data inserted successfully!")
@@ -141,21 +170,44 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
     def __fill_table(self, emp_id):
         table_content = {}
         default_vals = {}
+        emp_table = {}
         result = self.db.classes.get('CompetencyHub').clazz.query.filter_by(emp_id=emp_id).all()
 
         default_data_lang = self.db.classes.get('Language').clazz.query.filter_by().all()
         default_data_practice = self.db.classes.get('Practices').clazz.query.filter_by().all()
         default_data_rdct = self.db.classes.get('RDCT').clazz.query.filter_by().all()
         default_data_levels = self.db.classes.get('levels').clazz.query.filter_by().all()
+        default_data_company = self.db.classes.get('Company').clazz.query.filter_by().all()
+        default_data_micro = self.db.classes.get('Microcontroller').clazz.query.filter_by().all()
+        default_data_tech = self.db.classes.get('Technology').clazz.query.filter_by().all()
+        default_data_tool = self.db.classes.get('Tools').clazz.query.filter_by().all()
 
-        default_vals['languages'] = [lang.lang_name for lang in default_data_lang]
-        default_vals['practice'] = [practice.name for practice in default_data_practice]
-        default_vals['rdct'] = [rdct_.rdct_name for rdct_ in default_data_rdct]
-        default_vals['levels'] = [level.val for level in default_data_levels]
+        default_vals['languages'] = [lang.lang_name for lang in default_data_lang]  #
+        default_vals['practice'] = [practice.name for practice in default_data_practice]  #
+        default_vals['rdct'] = [rdct_.rdct_name for rdct_ in default_data_rdct]  #
+        default_vals['Company'] = [comp.text for comp in default_data_company]
+        default_vals['Microcontroller'] = [micro.text for micro in default_data_micro]
+        default_vals['Technology'] = [tech.tech for tech in default_data_tech]
+        default_vals['Tools'] = [tool.text for tool in default_data_tool]
+        default_vals['levels'] = [level.val for level in default_data_levels]  #
 
         i = 0
         for row in result:
-            table_content[i] = [row.prac.name, row.lang.lang_name, row.rdct.rdct_name, row.lvl.val]
+            table_content[i] = [row.prac.name, row.lang.lang_name, row.rdct.rdct_name, row.company.text, row.micro.text,
+                                row.tech.tech, row.tools.text, row.offer.text, row.ps1.text, row.ps2.text, row.ps3.text,
+                                row.lvl.val]
             i += 1
 
-        return table_content, default_vals
+        all_info = self.db.classes.get('CompetencyHub').clazz.query.filter_by().all()
+
+        i = 0
+        for row in all_info:
+            emp_id_row = row.emp_id
+            emp_name = row.emp.name
+
+            emp_table[i] = [emp_name, emp_id_row, row.prac.name, row.offer.text, row.rdct.rdct_name, row.lang.lang_name,
+                            row.lvl.val, row.company.text, row.tools.text, row.micro.text, row.tech.tech, row.ps1.text,
+                            row.ps2.text, row.ps3.text]
+            i += 1
+
+        return table_content, default_vals, emp_table

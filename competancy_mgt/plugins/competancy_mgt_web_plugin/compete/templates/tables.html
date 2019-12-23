@@ -37,22 +37,63 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
+                      <th><input type="text" id="inputName" onkeyup="findName()" placeholder="Search for names.." title="Type in a name"></th>
+                      <th><input type="text" id="inputEmpid" onkeyup="findEmpId()" placeholder="Search for EmpID.." title="Type in a Emp ID"></th>
+                      <th><input type="text" id="inputPractice" onkeyup="findPractice()" placeholder="Search for Practice.." title="Type in a Practice"></th>
+                      <th><input type="text" id="inputOffering" onkeyup="findOffering()" placeholder="Search for Offering.." title="Type in a Offering"></th>
+                      <th><input type="text" id="inputRdct" onkeyup="findRdct()" placeholder="Search for RDCT.." title="Type in a RDCT"></th>
+                      <th><input type="text" id="inputLanguage" onkeyup="findLanguage()" placeholder="Search for Language.." title="Type in a Language"></th>
+                      <th><input type="text" id="inputLevel" onkeyup="findLevel()" placeholder="Search for Level.." title="Type in a Level"></th>
+                      <th><input type="text" id="inputTools" onkeyup="findTools()" placeholder="Search for Tools.." title="Type in a Tools"></th>
+                      <th><input type="text" id="inputCompany" onkeyup="findCompany()" placeholder="Search for Company." title="Type in a Company"></th>
+                      <th><input type="text" id="inputMicrocontroller" onkeyup="findMicrocontroller()" placeholder="Search for Microcontroller." title="Type in a Microcontroller"></th>
+                      <th><input type="text" id="inputTechnology" onkeyup="findTechnology()" placeholder="Search for Technology." title="Type in a Technology"></th>
+                      <th><input type="text" id="inputps1" onkeyup="findps1()" placeholder="Search for ProjectSpecific1." title="Type in a ProjectSpecific1"></th>
+                      <th><input type="text" id="inputps2" onkeyup="findps2()" placeholder="Search for ProjectSpecific2." title="Type in a ProjectSpecific2"></th>
+                      <th><input type="text" id="inputps3" onkeyup="findps3()" placeholder="Search for ProjectSpecific3." title="Type in a ProjectSpecific3"></th>
                     </tr>
                   </thead>
-                  <tfoot>
+                  <thead>
                     <tr>
                       <th>Name</th>
-                      <th>Position</th>
-                      <th>Office</th>
-                      <th>Age</th>
-                      <th>Start date</th>
-                      <th>Salary</th>
+                      <th>Emp ID</th>
+                      <th>Practice</th>
+                      <th>Offering</th>
+                      <th>RDCT</th>
+                      <th>Language</th>
+                      <th>Level</th>
+                      <th>Company</th>
+                      <th>Tools</th>
+                      <th>Microcontroller</th>
+                      <th>Technology</th>
+                      <th>ProjectSpecific1</th>
+                      <th>ProjectSpecific2</th>
+                      <th>ProjectSpecific3</th>
+                    </tr>
+                  </thead>
+                  {% for key, value in user_data['emp_table'].items() %}
+                  <tr>
+                    {% for data in value %}
+                      <td>{{ data }}</td>
+                    {% endfor %}
+                  </tr>
+                  {% endfor %}
+                  <tfoot>
+                   <tr>
+                      <th>Name</th>
+                      <th>Emp ID</th>
+                      <th>Practice</th>
+                      <th>Offering</th>
+                      <th>RDCT</th>
+                      <th>Language</th>
+                      <th>Level</th>
+                      <th>Company</th>
+                      <th>Tools</th>
+                      <th>Microcontroller</th>
+                      <th>Technology</th>
+                      <th>ProjectSpecific1</th>
+                      <th>ProjectSpecific2</th>
+                      <th>ProjectSpecific3</th>
                     </tr>
                   </tfoot>
                   <tbody>
@@ -96,20 +137,21 @@
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{url_for('compete.static', filename='vendor/jquery/jquery.min.js')}}"></script>
-  <script src="{{url_for('compete.static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+<!--  <script src="{{url_for('compete.static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>-->
 
   <!-- Core plugin JavaScript-->
   <script src="{{url_for('compete.static', filename='vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 
   <!-- Custom scripts for all pages-->
+  <script src="{{url_for('compete.static', filename='js/myTableFunctions.js')}}"></script>
   <script src="{{url_for('compete.static', filename='js/sb-admin-2.min.js')}}"></script>
 
   <!-- Page level plugins -->
-  <script src="{{url_for('compete.static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>
-  <script src="{{url_for('compete.static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>
+<!--  <script src="{{url_for('compete.static', filename='vendor/datatables/jquery.dataTables.min.js')}}"></script>-->
+<!--  <script src="{{url_for('compete.static', filename='vendor/datatables/dataTables.bootstrap4.min.js')}}"></script>-->
 
   <!-- Page level custom scripts -->
-  <script src="{{url_for('compete.static', filename='js/demo/datatables-demo.js')}}"></script>
+<!--  <script src="{{url_for('compete.static', filename='js/demo/datatables-demo.js')}}"></script>-->
 
 </body>
 
