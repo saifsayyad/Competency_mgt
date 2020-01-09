@@ -1,265 +1,141 @@
-function findName() {
+var rowsToShow=[];
+
+function findTable() {
   var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputName");
-  filter = input.value.toUpperCase();
+  var fetchData = {
+          "inputName": {"valll": document.getElementById("inputName").value.toUpperCase(), "col":1},
+          "inputEmpid": {"valll": document.getElementById("inputEmpid").value.toUpperCase(), "col":2},
+          "inputGrade": {"valll": document.getElementById("inputGrade").value.toUpperCase(), "col":3},
+          "inputPractice": {"valll": document.getElementById("inputPractice").value.toUpperCase(), "col":4},
+          "inputOffering": {"valll": document.getElementById("inputOffering").value.toUpperCase(), "col":5},
+          "inputRdct": {"valll": document.getElementById("inputRdct").value.toUpperCase(), "col":6},
+          "inputLanguage": {"valll": document.getElementById("inputLanguage").value.toUpperCase(), "col":7},
+          "inputLevel": {"valll": document.getElementById("inputLevel").value.toUpperCase(), "col":8},
+          "inputTools": {"valll": document.getElementById("inputTools").value.toUpperCase(), "col":9},
+          "inputCompany": {"valll": document.getElementById("inputCompany").value.toUpperCase(), "col":10},
+          "inputMicrocontroller": {"valll": document.getElementById("inputMicrocontroller").value.toUpperCase(), "col":12},
+          "inputTechnology": {"valll": document.getElementById("inputTechnology").value.toUpperCase(), "col":13},
+          "inputps1": {"valll": document.getElementById("inputps1").value.toUpperCase(), "col":13},
+          "inputps2": {"valll": document.getElementById("inputps2").value.toUpperCase(), "col":14},
+          "inputps3": {"valll": document.getElementById("inputps3").value.toUpperCase(), "col":15}
+        }
+
   table = document.getElementById("dataTable");
   tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[0];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
+  showAllRows(tr);
+  var textPresent = false;
+  for (var i in fetchData){
+    if (fetchData[i]['valll'] != ""){
+    textPresent = true;
+    }
+  }
+
+  if(textPresent){
+    for (var inp in fetchData) {
+      filter = fetchData[inp]['valll'];
+      if (filter){
+          for (i = 1; i < tr.length; i++) {
+            if (tr[i].style.display != "none"){
+                td = tr[i].getElementsByTagName("td")[fetchData[inp]['col']];
+                if (td) {
+                  txtValue = td.textContent || td.innerText;
+                  if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                  } else {
+                    tr[i].style.display = "none";
+                  }
+                }
+            }
+          }
       }
     }
   }
+  else{
+    showAllRows(tr);
+  }
+
 }
 
-function findEmpId() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputEmpid");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[1];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
+function showAllRows(tr){
+    for (var i=0; i < tr.length; i++){
+    tr[i].style.display = "";
     }
-  }
 }
 
-function findPractice() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputPractice");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[2];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
+var newWin = 0;
+
+function addSelected(rowNum){
+    table = document.getElementById("dataTable");
+    tr = table.getElementsByTagName("tr");
+
+    if (window.newWin == 0){
+        window.newWin = window.open("about:blank", rowNum, "width=auto,height=auto");
+        console.log(window.newWin);
+        window.newWin.document.write("<html> <head> <link href=\"/compete_mgt/static/css/sb-admin-2.css\" rel=\"stylesheet\"> </head> <body> <script src=\"/compete_mgt/static/js/myTableFunctions.js\"></script> <div class=\"card shadow mb-4\"> <div class=\"card-header py-3\"> <h6 class=\"m-0 font-weight-bold text-primary\">Selected</h6> </div> <div class=\"card-body\"> <div class=\"table-responsive\"> <table class=\"table table-bordered\" id=\"dataTable\"><thead id=\"headers\"><tr><th>Remove</th><th>Name</th><th>Emp ID</th><th>Grade</th><th>Practice</th><th>Offering</th><th>RDCT</th><th>Language</th><th>Level</th><th>Company</th><th>Tools</th><th>Microcontroller</th><th>Technology</th><th>ProjectSpecific1</th><th>ProjectSpecific2</th><th>ProjectSpecific3</th></tr></thead><tbody></tbody></table></div></div> <button id=\"export\" onclick=\"writeHeadersToExcel()\"> Export </button> </div></body></html>");
+        var timer = setInterval(function() {
+            if(window.newWin.closed) {
+                clearInterval(timer);
+                window.newWin = 0;
+                alert('Selected Staff reset!');
+                for (var i=0; i < tr.length; i++){
+                    try{
+                        document.getElementById("button"+(i)).style.opacity = "";
+                        document.getElementById("button"+(i)).style.pointerEvents  = "auto";
+                    }catch(err){
+                        document.getElementById("button"+(i)).style.opacity = "";
+                        console.log(err);
+                    }
+                }
+            }
+        }, 1000);
     }
-  }
+
+    document.getElementById("button"+(rowNum)).style.pointerEvents = 'none';
+    document.getElementById("button"+(rowNum)).style.opacity = 0.4;
+
+    var selectedTable = window.newWin.document.getElementById("dataTable");
+    rowAdded = selectedTable.insertRow(selectedTable.rows.length);
+    console.log(rowAdded);
+    for (var i=0; i < tr[rowNum+2].cells.length; i++){
+        td = rowAdded.insertCell(0);
+        if (i == 0){
+            buttonId = tr[rowNum+2].cells[i].id;
+            td.id = buttonId;
+            td.innerHTML = "<img class=\"select-img\" id=\""+buttonId+"\" onclick=\"removeSelected(this)\" src=\"/compete_mgt/static/img/deselected.png\">"
+        }
+        else{
+            td.innerText = tr[rowNum+2].cells[i].innerText;
+        }
+        rowAdded.appendChild(td);
+    }
 }
 
-function findOffering() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputOffering");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[3];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
+function removeSelected(rowNum){
+    var selectedTable = this.document.getElementById("dataTable");
+    var mainTable = window.opener.document.getElementById("dataTable");
+    selectedTable.deleteRow(rowNum.parentNode.parentNode.rowIndex);
+    window.opener.document.getElementById(rowNum.parentNode.id).style.opacity = "";
+    window.opener.document.getElementById(rowNum.parentNode.id).style.pointerEvents  = "auto";
 }
 
-function findRdct() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputRdct");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[4];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
+function writeHeadersToExcel()
+{
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = this.document.getElementById("dataTable");
+    var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
 
-function findLanguage() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputLanguage");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[5];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
+    filename = 'excel_data.xls';
+    downloadLink = this.document.createElement("a");
+    this.document.body.appendChild(downloadLink);
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {
+            type: dataType
+        });
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        downloadLink.download = filename;
+        downloadLink.click();
     }
-  }
-}
-
-function findLevel() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputLevel");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[6];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findTools() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputTools");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[7];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findCompany() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputCompany");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[8];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findMicrocontroller() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputMicrocontroller");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[9];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findTechnology() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputTechnology");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[10];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findps1() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputps1");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[11];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findps2() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputps2");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[12];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
-}
-
-function findps3() {
-  var input, filter, table, tr, td, i, txtValue;
-  input = document.getElementById("inputps3");
-  filter = input.value.toUpperCase();
-  table = document.getElementById("dataTable");
-  tr = table.getElementsByTagName("tr");
-  for (i = 0; i < tr.length; i++) {
-    td = tr[i].getElementsByTagName("td")[13];
-    if (td) {
-      txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-        tr[i].style.display = "";
-      } else {
-        tr[i].style.display = "none";
-      }
-    }
-  }
 }

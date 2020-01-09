@@ -9,6 +9,11 @@ CM_DATABASE_NAME = 'competency_hub'
 CM_DATABASE_CONNECTION = r'mysql+pymysql://root:@localhost:3306/competency_hub'
 CM_DATABASE_DESCRIPTION = 'Storage of data with levels.'
 
+FLASK_SERVER_NAME = "10.30.18.55:5000"
+FLASK_HOST = "10.30.18.55"
+FLASK_PORT = 5000
+FLASK_DEBUG = True
+
 USERS_DB_URL = r'mysql+pymysql://root:@localhost:3306/competency_hub'
 
 PLUGINS = ["CompetencyMgtWebPlugin", "GwPluginsInfo", "GwWeb", "GwWebManager"]

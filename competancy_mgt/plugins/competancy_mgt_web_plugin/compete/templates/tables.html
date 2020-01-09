@@ -4,7 +4,7 @@
 {% include 'header.html' %}
 
 <body id="page-top">
-
+  <script src="{{url_for('compete.static', filename='js/myTableFunctions.js')}}"></script>
   <!-- Page Wrapper -->
   <div id="wrapper">
 
@@ -30,33 +30,37 @@
           <!-- DataTales Example -->
           <div class="card shadow mb-4">
             <div class="card-header py-3">
-              <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+              <h6 class="m-0 font-weight-bold text-primary">Available Data</h6>
             </div>
             <div class="card-body">
               <div class="table-responsive">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                   <thead>
                     <tr>
-                      <th><input type="text" id="inputName" onkeyup="findName()" placeholder="Search for names.." title="Type in a name"></th>
-                      <th><input type="text" id="inputEmpid" onkeyup="findEmpId()" placeholder="Search for EmpID.." title="Type in a Emp ID"></th>
-                      <th><input type="text" id="inputPractice" onkeyup="findPractice()" placeholder="Search for Practice.." title="Type in a Practice"></th>
-                      <th><input type="text" id="inputOffering" onkeyup="findOffering()" placeholder="Search for Offering.." title="Type in a Offering"></th>
-                      <th><input type="text" id="inputRdct" onkeyup="findRdct()" placeholder="Search for RDCT.." title="Type in a RDCT"></th>
-                      <th><input type="text" id="inputLanguage" onkeyup="findLanguage()" placeholder="Search for Language.." title="Type in a Language"></th>
-                      <th><input type="text" id="inputLevel" onkeyup="findLevel()" placeholder="Search for Level.." title="Type in a Level"></th>
-                      <th><input type="text" id="inputTools" onkeyup="findTools()" placeholder="Search for Tools.." title="Type in a Tools"></th>
-                      <th><input type="text" id="inputCompany" onkeyup="findCompany()" placeholder="Search for Company." title="Type in a Company"></th>
-                      <th><input type="text" id="inputMicrocontroller" onkeyup="findMicrocontroller()" placeholder="Search for Microcontroller." title="Type in a Microcontroller"></th>
-                      <th><input type="text" id="inputTechnology" onkeyup="findTechnology()" placeholder="Search for Technology." title="Type in a Technology"></th>
-                      <th><input type="text" id="inputps1" onkeyup="findps1()" placeholder="Search for ProjectSpecific1." title="Type in a ProjectSpecific1"></th>
-                      <th><input type="text" id="inputps2" onkeyup="findps2()" placeholder="Search for ProjectSpecific2." title="Type in a ProjectSpecific2"></th>
-                      <th><input type="text" id="inputps3" onkeyup="findps3()" placeholder="Search for ProjectSpecific3." title="Type in a ProjectSpecific3"></th>
+                      <th></th>
+                      <th><input type="text" id="inputName" onkeyup="findTable()" placeholder="Search for names.." title="Type in a name"></th>
+                      <th><input type="text" id="inputEmpid" onkeyup="findTable()" placeholder="Search for EmpID.." title="Type in a Emp ID"></th>
+                      <th><input type="text" id="inputGrade" onkeyup="findTable()" placeholder="Search for Grade.." title="Type in a Grade"></th>
+                      <th><input type="text" id="inputPractice" onkeyup="findTable()" placeholder="Search for Practice.." title="Type in a Practice"></th>
+                      <th><input type="text" id="inputOffering" onkeyup="findTable()" placeholder="Search for Offering.." title="Type in a Offering"></th>
+                      <th><input type="text" id="inputRdct" onkeyup="findTable()" placeholder="Search for RDCT.." title="Type in a RDCT"></th>
+                      <th><input type="text" id="inputLanguage" onkeyup="findTable()" placeholder="Search for Language.." title="Type in a Language"></th>
+                      <th><input type="text" id="inputLevel" onkeyup="findTable()" placeholder="Search for Level.." title="Type in a Level"></th>
+                      <th><input type="text" id="inputTools" onkeyup="findTable()" placeholder="Search for Tools.." title="Type in a Tools"></th>
+                      <th><input type="text" id="inputCompany" onkeyup="findTable()" placeholder="Search for Company." title="Type in a Company"></th>
+                      <th><input type="text" id="inputMicrocontroller" onkeyup="findTable()" placeholder="Search for Microcontroller." title="Type in a Microcontroller"></th>
+                      <th><input type="text" id="inputTechnology" onkeyup="findTable()" placeholder="Search for Technology." title="Type in a Technology"></th>
+                      <th><input type="text" id="inputps1" onkeyup="findTable()" placeholder="Search for ProjectSpecific1." title="Type in a ProjectSpecific1"></th>
+                      <th><input type="text" id="inputps2" onkeyup="findTable()" placeholder="Search for ProjectSpecific2." title="Type in a ProjectSpecific2"></th>
+                      <th><input type="text" id="inputps3" onkeyup="findTable()" placeholder="Search for ProjectSpecific3." title="Type in a ProjectSpecific3"></th>
                     </tr>
                   </thead>
                   <thead>
                     <tr>
+                      <th>Select</th>
                       <th>Name</th>
                       <th>Emp ID</th>
+                      <th>Grade</th>
                       <th>Practice</th>
                       <th>Offering</th>
                       <th>RDCT</th>
@@ -73,29 +77,12 @@
                   </thead>
                   {% for key, value in user_data['emp_table'].items() %}
                   <tr>
+                    <td class="no-scroll-col" id="button{{key}}"><img class="select-img" id="button{{key}}" onclick="addSelected({{ key }})" src="{{url_for('compete.static', filename='img/selected.png')}}"></td>
                     {% for data in value %}
                       <td>{{ data }}</td>
                     {% endfor %}
                   </tr>
                   {% endfor %}
-                  <tfoot>
-                   <tr>
-                      <th>Name</th>
-                      <th>Emp ID</th>
-                      <th>Practice</th>
-                      <th>Offering</th>
-                      <th>RDCT</th>
-                      <th>Language</th>
-                      <th>Level</th>
-                      <th>Company</th>
-                      <th>Tools</th>
-                      <th>Microcontroller</th>
-                      <th>Technology</th>
-                      <th>ProjectSpecific1</th>
-                      <th>ProjectSpecific2</th>
-                      <th>ProjectSpecific3</th>
-                    </tr>
-                  </tfoot>
                   <tbody>
 
                   </tbody>
@@ -110,15 +97,9 @@
       </div>
       <!-- End of Main Content -->
 
-      <!-- Footer -->
-      <footer class="sticky-footer bg-white">
-        <div class="container my-auto">
-          <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
-          </div>
-        </div>
-      </footer>
-      <!-- End of Footer -->
+
+      <!-- Logout Modal-->
+      {% include 'logoutmodel.html' %}
 
     </div>
     <!-- End of Content Wrapper -->
@@ -143,7 +124,6 @@
   <script src="{{url_for('compete.static', filename='vendor/jquery-easing/jquery.easing.min.js')}}"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="{{url_for('compete.static', filename='js/myTableFunctions.js')}}"></script>
   <script src="{{url_for('compete.static', filename='js/sb-admin-2.min.js')}}"></script>
 
   <!-- Page level plugins -->

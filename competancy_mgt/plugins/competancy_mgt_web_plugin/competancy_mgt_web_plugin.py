@@ -3,21 +3,15 @@ import os
 from groundwork.patterns import GwCommandsPattern
 from groundwork_web.patterns import GwWebPattern
 from competancy_mgt.patterns.compete_database_pattern.compete_database_pattern import CompeteDatabasePattern
-import competancy_mgt.patterns.compete_database_pattern.models
 
-from flask import request, redirect, url_for
+from flask import request, redirect, url_for, session
 
 
 class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPattern):
     def __init__(self, *args, **kwargs):
         self.name = self.__class__.__name__
         super().__init__(*args, **kwargs)
-        self.loggedin_username = ''
-        self.loggedin_user_id = ''
-        self.access_rights = ''
         self.db = self.app.databases.get(self.app.config.get('CM_DATABASE_NAME'))
-        self.user_data = {'username': self.loggedin_username, 'emp_id': self.loggedin_user_id, "access": 'False',
-                          "complete_table": {}, "default_data": {}}
 
     def activate(self):
         static_folder = os.path.join(os.path.abspath(os.path.dirname(__file__)), "compete", "static")
@@ -51,12 +45,10 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
     def __update_resource(self):
         method = request.method
         if method == "GET":
-            return self.web.render("tables.html", user_data=self.user_data)
+            return self.web.render("tables.html", user_name=session['username'], user_id=session['emp_id'],
+                                   user_data=session)
 
     def __user_login(self):
-        self.loggedin_user_id = ''
-        self.loggedin_username = ''
-        self.access_rights = ''
         method = request.method
         if method == "GET":
             return self.web.render("login.html")
@@ -68,9 +60,9 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
                 if result.name == username:
                     fet_pass = self.db.classes.get('Access').clazz.query.filter_by(emp_id=result.emp_id).first()
                     if fet_pass.password == password:
-                        self.user_data['emp_id'] = result.emp_id
-                        self.user_data['username'] = result.name
-                        self.user_data['access'] = result.authorization
+                        session['emp_id'] = result.emp_id
+                        session['username'] = result.name
+                        session['access'] = result.authorization
                         return redirect(url_for('compete.__index_page'))
                     else:
                         return self.web.render("login.html", error="Wrong Password!")
@@ -97,17 +89,15 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
     def __index_page(self):
         method = request.method
         if method == 'GET':
-            if self.user_data['emp_id'] != '':
-                self.user_data['complete_table'], self.user_data['default_data'], self.user_data[
-                    'emp_table'] = self.__fill_table(
-                    emp_id=self.user_data['emp_id'])
-                if self.access_rights == 'True':
-                    self.user_data['access'] = 'True'
-                    print(self.user_data)
-                    return self.web.render("index.html", user_data=self.user_data)
+            if session['emp_id'] != '':
+                session['complete_table'], session['default_data'], session['emp_table'] = self.__fill_table(
+                    emp_id=session['emp_id'])
+                if session['access'] == 'True':
+                    return self.web.render("index.html", user_name=session['username'], user_id=session['emp_id'],
+                                           user_data=session)
                 else:
-                    self.user_data['access'] = 'False'
-                    return self.web.render("index.html", user_data=self.user_data)
+                    return self.web.render("index.html", user_name=session['username'], user_id=session['emp_id'],
+                                           user_data=session)
             else:
                 return redirect(url_for('compete.__user_login'))
         else:
@@ -138,17 +128,17 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
             self.db_import('Ps3', text=ps3_text)
             ps3 = self.db.classes.get('Ps3').clazz.query.filter_by(text=ps3_text).first()
 
-            self.db_import('CompetencyHub', emp_id=int(self.user_data['emp_id']), emp_lang_id=language.id,
+            self.db_import('CompetencyHub', emp_id=int(session['emp_id']), emp_lang_id=language.id,
                            emp_practice_id=practice.id, emp_rdct_id=rdct.id, level=lvl.id, company_id=company.id,
                            micro_id=micro.id, tech_id=tech.id, tools_id=tools.id, offering_id=offering.id,
                            ps1_id=ps1.id, ps2_id=ps2.id, ps3_id=ps3.id)
 
-            if self.user_data['emp_id'] != '':
-                self.user_data['complete_table'], self.user_data['default_data'], self.user_data[
-                    'emp_table'] = self.__fill_table(emp_id=self.user_data['emp_id'])
+            if session['emp_id'] != '':
+                session['complete_table'], session['default_data'], session[
+                    'emp_table'] = self.__fill_table(emp_id=session['emp_id'])
             else:
                 return redirect(url_for('compete.__user_login'))
-            return self.web.render("index.html", user_data=self.user_data, success="Data inserted successfully!")
+            return self.web.render("index.html", user_data=session, success="Data inserted successfully!")
 
     def db_import(self, table, override=False, **kwargs):
         """
@@ -182,10 +172,11 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
         default_data_tech = self.db.classes.get('Technology').clazz.query.filter_by().all()
         default_data_tool = self.db.classes.get('Tools').clazz.query.filter_by().all()
 
-        default_vals['languages'] = [lang.lang_name for lang in default_data_lang]  #
+
         default_vals['practice'] = [practice.name for practice in default_data_practice]  #
-        default_vals['rdct'] = [rdct_.rdct_name for rdct_ in default_data_rdct]  #
         default_vals['Company'] = [comp.text for comp in default_data_company]
+        default_vals['rdct'] = [rdct_.rdct_name for rdct_ in default_data_rdct]  #
+        default_vals['languages'] = [lang.lang_name for lang in default_data_lang]  #
         default_vals['Microcontroller'] = [micro.text for micro in default_data_micro]
         default_vals['Technology'] = [tech.tech for tech in default_data_tech]
         default_vals['Tools'] = [tool.text for tool in default_data_tool]
@@ -202,12 +193,9 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
 
         i = 0
         for row in all_info:
-            emp_id_row = row.emp_id
-            emp_name = row.emp.name
-
-            emp_table[i] = [emp_name, emp_id_row, row.prac.name, row.offer.text, row.rdct.rdct_name, row.lang.lang_name,
-                            row.lvl.val, row.company.text, row.tools.text, row.micro.text, row.tech.tech, row.ps1.text,
-                            row.ps2.text, row.ps3.text]
+            emp_table[i] = [row.emp.name, row.emp_id, row.emp.grade, row.prac.name, row.offer.text, row.rdct.rdct_name,
+                            row.lang.lang_name, row.lvl.val, row.company.text, row.tools.text, row.micro.text,
+                            row.tech.tech, row.ps1.text, row.ps2.text, row.ps3.text]
             i += 1
 
         return table_content, default_vals, emp_table
