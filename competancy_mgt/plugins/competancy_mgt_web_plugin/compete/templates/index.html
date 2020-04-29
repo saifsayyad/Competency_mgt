@@ -50,8 +50,10 @@
                   {% for data in value %}
                   <td>{{ data }}</td>
                   {% endfor %}
-                  <td id="{{ key }}" onclick="alert('{{ key }} clicked');">
-                      <button id="btn2">Delete</button>
+                  <td id="{{ key }}">
+                      <form action="{{url_for('compete.__delete_data')}}" method="post">
+                          <button name="primary_key" value="{{ key }}">Delete</button>
+                      </form>
                   </td>
                 </tr>
                 {% endfor %}

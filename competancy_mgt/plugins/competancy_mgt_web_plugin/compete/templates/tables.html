@@ -31,6 +31,9 @@
           <div class="card shadow mb-4">
             <div class="card-header py-3">
               <h6 class="m-0 font-weight-bold text-primary">Available Data</h6>
+              <div class="expectation-div">
+                <a class="expectation-button" href="{{url_for('compete.__record_expectations')}}">Record Expectations</a>
+              </div>
             </div>
             <div class="card-body">
               <div class="table-responsive">
@@ -103,7 +106,7 @@
 
     </div>
     <!-- End of Content Wrapper -->
-
+  <!-- Logout Modal-->
   </div>
   <!-- End of Page Wrapper -->
 
@@ -111,10 +114,6 @@
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
-
-  <!-- Logout Modal-->
-  {% include 'logoutmodel.html' %}
-  </div>
 
   <!-- Bootstrap core JavaScript-->
   <script src="{{url_for('compete.static', filename='vendor/jquery/jquery.min.js')}}"></script>

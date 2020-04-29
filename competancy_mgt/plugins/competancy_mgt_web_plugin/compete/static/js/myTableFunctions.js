@@ -13,8 +13,8 @@ function findTable() {
           "inputLevel": {"valll": document.getElementById("inputLevel").value.toUpperCase(), "col":8},
           "inputTools": {"valll": document.getElementById("inputTools").value.toUpperCase(), "col":9},
           "inputCompany": {"valll": document.getElementById("inputCompany").value.toUpperCase(), "col":10},
-          "inputMicrocontroller": {"valll": document.getElementById("inputMicrocontroller").value.toUpperCase(), "col":12},
-          "inputTechnology": {"valll": document.getElementById("inputTechnology").value.toUpperCase(), "col":13},
+          "inputMicrocontroller": {"valll": document.getElementById("inputMicrocontroller").value.toUpperCase(), "col":11},
+          "inputTechnology": {"valll": document.getElementById("inputTechnology").value.toUpperCase(), "col":12},
           "inputps1": {"valll": document.getElementById("inputps1").value.toUpperCase(), "col":13},
           "inputps2": {"valll": document.getElementById("inputps2").value.toUpperCase(), "col":14},
           "inputps3": {"valll": document.getElementById("inputps3").value.toUpperCase(), "col":15}
@@ -90,18 +90,25 @@ function addSelected(rowNum){
         }, 1000);
     }
 
+    toggleSelection(tr,rowNum, "none", 0.4, false);
+
     document.getElementById("button"+(rowNum)).style.pointerEvents = 'none';
     document.getElementById("button"+(rowNum)).style.opacity = 0.4;
-
+    try{
     var selectedTable = window.newWin.document.getElementById("dataTable");
     rowAdded = selectedTable.insertRow(selectedTable.rows.length);
+    }catch(err){
+    var selectedTable = window.newWin.document.getElementById("dataTable");
+    rowAdded = selectedTable.insertRow(selectedTable.rows.length);
+    }
     console.log(rowAdded);
     for (var i=0; i < tr[rowNum+2].cells.length; i++){
         td = rowAdded.insertCell(0);
         if (i == 0){
             buttonId = tr[rowNum+2].cells[i].id;
             td.id = buttonId;
-            td.innerHTML = "<img class=\"select-img\" id=\""+buttonId+"\" onclick=\"removeSelected(this)\" src=\"/compete_mgt/static/img/deselected.png\">"
+            keyy = buttonId.replace('button', '');
+                                            td.innerHTML = "<img class=\"select-img\" id=\""+buttonId+"\" onclick=\"removeSelected(this,"+keyy+")\" src=\"/compete_mgt/static/img/deselected.png\">"
         }
         else{
             td.innerText = tr[rowNum+2].cells[i].innerText;
@@ -110,12 +117,43 @@ function addSelected(rowNum){
     }
 }
 
-function removeSelected(rowNum){
+function toggleSelection(tr, rowNum, pointEve, opac, openerNeeded){
+    filter = tr[rowNum+2].getElementsByTagName("td")[2];
+    filterValue = filter.textContent || filter.innerText;
+    console.log(filterValue);
+
+    for (var i=0; i < tr.length; i++){
+        try{
+        td = tr[i].getElementsByTagName("td")[2];
+          if (td) {
+             txtValue = td.textContent || td.innerText;
+             console.log(txtValue);
+             if (txtValue === filterValue) {
+                if(openerNeeded){
+                    window.opener.document.getElementById("button"+(i-2)).style.pointerEvents = pointEve;
+                    window.opener.document.getElementById("button"+(i-2)).style.opacity = opac;
+                }
+                else{
+                    document.getElementById("button"+(i-2)).style.pointerEvents = pointEve;
+                    document.getElementById("button"+(i-2)).style.opacity = opac;
+                }
+             }
+          }
+        }catch(err){
+            console.log(err);
+        }
+    }
+}
+
+function removeSelected(other, rowNum){
     var selectedTable = this.document.getElementById("dataTable");
     var mainTable = window.opener.document.getElementById("dataTable");
-    selectedTable.deleteRow(rowNum.parentNode.parentNode.rowIndex);
-    window.opener.document.getElementById(rowNum.parentNode.id).style.opacity = "";
-    window.opener.document.getElementById(rowNum.parentNode.id).style.pointerEvents  = "auto";
+    selectedTable.deleteRow(other.parentNode.parentNode.rowIndex);
+    window.opener.document.getElementById(other.parentNode.id).style.opacity = "";
+    window.opener.document.getElementById(other.parentNode.id).style.pointerEvents  = "auto";
+    table = window.opener.document.getElementById("dataTable");
+    tr = table.getElementsByTagName("tr");
+    toggleSelection(tr, rowNum, "auto", "", true);
 }
 
 function writeHeadersToExcel()

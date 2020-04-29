@@ -11099,7 +11099,7 @@ body.sidebar-toggled footer.sticky-footer {
 	padding: 19px 39px 18px 39px;
 	color: #FFF;
 	margin: 0 auto;
-	background: #1abc9c;
+	background: #8aa90ffa;
 	font-size: 18px;
 	text-align: center;
 	font-style: normal;
@@ -11136,13 +11136,27 @@ body.sidebar-toggled footer.sticky-footer {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #4CAF50;
+  background-color: #ffbdfd;
   color: white;
 }
 
 .select-img {
   height: 50%;
   width: 75%;
+}
+
+.expectation-button{
+  background-color: #dc7d61;
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+.expectation-div{
+  text-align: -webkit-right;
 }
 
 .select-img:hover {

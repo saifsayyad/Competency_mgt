@@ -35,12 +35,37 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
         self.web.routes.register(url='/test1', methods=["GET"], endpoint=self.__test1, context="compete")
         self.web.routes.register(url='/update_res', methods=["GET", "POST"], endpoint=self.__update_resource,
                                  context="compete")
+        self.web.routes.register(url='/expectations', methods=["GET", "POST"], endpoint=self.__record_expectations,
+                                 context="compete", name="record_expectations",
+                                 description="Page for recording expectations")
+        self.web.routes.register(url='/deleteRow', methods=["GET", "POST"], endpoint=self.__delete_data,
+                                 context="compete", name="delete_self_data",
+                                 description="Deletes the data from db and renders new page")
 
     def deactivate(self):
         pass
 
     def __test1(self):
         return self.web.render("charts.html")
+
+    def __delete_data(self):
+        method = request.method
+        if method == "POST":
+            primary_key = request.form['primary_key']
+            reult = self.db.classes.get('CompetencyHub').clazz.query.filter_by(id=primary_key).delete()
+            self.db.session.commit()
+            self.log.info("Record Deleted!" + ' ' + str(reult))
+            session['complete_table'], session['default_data'], session['emp_table'] = self.__fill_table(
+                emp_id=session['emp_id'])
+            return self.web.render("index.html", user_name=session['username'], user_id=session['emp_id'],
+                                   user_data=session)
+
+    def __record_expectations(self):
+        method = request.method
+        if method == "GET":
+            print("called")
+        else:
+            print("this is called")
 
     def __update_resource(self):
         method = request.method
@@ -172,7 +197,6 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
         default_data_tech = self.db.classes.get('Technology').clazz.query.filter_by().all()
         default_data_tool = self.db.classes.get('Tools').clazz.query.filter_by().all()
 
-
         default_vals['practice'] = [practice.name for practice in default_data_practice]  #
         default_vals['Company'] = [comp.text for comp in default_data_company]
         default_vals['rdct'] = [rdct_.rdct_name for rdct_ in default_data_rdct]  #
@@ -182,20 +206,19 @@ class CompetencyMgtWebPlugin(CompeteDatabasePattern, GwWebPattern, GwCommandsPat
         default_vals['Tools'] = [tool.text for tool in default_data_tool]
         default_vals['levels'] = [level.val for level in default_data_levels]  #
 
-        i = 0
         for row in result:
-            table_content[i] = [row.prac.name, row.lang.lang_name, row.rdct.rdct_name, row.company.text, row.micro.text,
-                                row.tech.tech, row.tools.text, row.offer.text, row.ps1.text, row.ps2.text, row.ps3.text,
-                                row.lvl.val]
-            i += 1
+            table_content[row.id] = [row.prac.name, row.lang.lang_name, row.rdct.rdct_name, row.company.text,
+                                     row.micro.text,
+                                     row.tech.tech, row.tools.text, row.offer.text, row.ps1.text, row.ps2.text,
+                                     row.ps3.text,
+                                     row.lvl.val]
 
         all_info = self.db.classes.get('CompetencyHub').clazz.query.filter_by().all()
 
-        i = 0
         for row in all_info:
-            emp_table[i] = [row.emp.name, row.emp_id, row.emp.grade, row.prac.name, row.offer.text, row.rdct.rdct_name,
-                            row.lang.lang_name, row.lvl.val, row.company.text, row.tools.text, row.micro.text,
-                            row.tech.tech, row.ps1.text, row.ps2.text, row.ps3.text]
-            i += 1
+            emp_table[row.id] = [row.emp.name, row.emp_id, row.emp.grade, row.prac.name, row.offer.text,
+                                 row.rdct.rdct_name,
+                                 row.lang.lang_name, row.lvl.val, row.company.text, row.tools.text, row.micro.text,
+                                 row.tech.tech, row.ps1.text, row.ps2.text, row.ps3.text]
 
         return table_content, default_vals, emp_table
