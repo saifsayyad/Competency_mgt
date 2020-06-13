@@ -11,4 +11,4 @@ Start the server::
 
 And visit the following link::
 
-    
+    http://localhost:5000/compete_mgt/login
