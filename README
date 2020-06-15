@@ -5,6 +5,9 @@ Inside competancy_mgt run::
 
     python setup.py develop
 
+Usage
+=====
+ 
 Start the server::
 
     competancy_mgt server_start flask_debug
